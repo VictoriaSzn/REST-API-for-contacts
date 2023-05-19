@@ -1,6 +1,7 @@
 const { Schema, model } = require("mongoose");
-const { handleMongooseError }= require("../helpers")
-
+const { handleMongooseError } = require("../helpers");
+const Joi = require("joi");
+//joi перевіряє тіло запиту а монгуз те що зберігаємо у базі
 const contactSchema = new Schema({
     name: {
         type: String,
@@ -17,10 +18,31 @@ const contactSchema = new Schema({
         type: Boolean,
         default: false,
     }
-}, { versionKey: false, timestamps: true });
-
-contactSchema.post("save", handleMongooseError);
+}, { versionKey: false, timestamps: true });//об'єкт налаштування
+//щоб замість _v(версія) писало дату створення і дату оновлення
 
 const Contact = model("contact", contactSchema);
 
-module.exports = Contact;
+//методи монгузу викидають помилку без статусу і обробник помилок дає їй статус 500 а це помилка 400 тому додаємо миддлвару
+contactSchema.post("save", handleMongooseError);
+
+const addSchema = Joi.object({
+  name: Joi.string(),
+  email: Joi.string(),
+  phone: Joi.string(),
+  favorite: Joi.boolean(),
+})
+
+const updateFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required(),
+})
+
+const schemas = {
+    addSchema,
+    updateFavoriteSchema,
+}
+
+module.exports = {
+    Contact,
+    schemas,
+}
