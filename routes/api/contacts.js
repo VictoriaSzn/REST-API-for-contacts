@@ -1,18 +1,22 @@
 const express = require('express');
-const ctrl = require("../../controllers/contacts")
+const ctrl = require("../../controllers/contacts");
+const {schemas} = require("../../models/contact");
+const {validateBody, isValidId, authenticate} = require("../../middlewares")
 
 const router = express.Router();
 
+router.get('/', authenticate, ctrl.getAll);
 
+ router.get('/:contactId', authenticate, isValidId, ctrl.getById);
 
-router.get('/', ctrl.getAll);
+ router.post('/', authenticate, validateBody(schemas.addSchema), ctrl.add);
 
-router.get('/:contactId', ctrl.getById);
+router.delete('/:contactId', authenticate, isValidId, ctrl.deleteById);
 
-router.post('/', ctrl.add);
+router.put('/:contactId', authenticate, isValidId, validateBody(schemas.addSchema), ctrl.updateById);
+//редагує поле назву якого ви не знаєте
 
-router.delete('/:contactId', ctrl.deleteById);
+router.patch('/:contactId/favorite', authenticate, isValidId, validateBody(schemas.updateFavoriteSchema),ctrl.updateFavorite);
+//редагує поле назву якого ви точно знаєте
 
-router.put('/:contactId', ctrl.updateById);
-
-module.exports = router
+module.exports = router;
