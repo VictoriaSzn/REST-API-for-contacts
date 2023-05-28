@@ -10,9 +10,10 @@ const authenticate = async (req, res, next) => {
         next(HttpError(401));
     }
     try {
-        const { id } = jwt.verify(token, SECRET_KEY);
-        const user = await User.findById(id);
+        const { id } = jwt.verify(token, SECRET_KEY);//для перевірки токена
+        const user = await User.findById(id);//чи є людина в базі
         if (!user || !user.token || user.token !== token) {
+        //if(!user){
             next(HttpError(401));
         }
         req.user = user;

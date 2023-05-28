@@ -8,7 +8,7 @@ const purposeList = ["starter", "pro", "business"];
 const userSchema = new Schema({
  password: {
     type: String,
-    required: [true, 'Set password for user'],
+    required: [true, 'Password is required'],
     minlength:6,
   },
   email: {
@@ -22,12 +22,10 @@ const userSchema = new Schema({
     enum: purposeList,
     default: "starter"
   },
-  owner: {
-    type: Schema.Types.ObjectId,
-    ref: "user",
-    required: true,
-  },
-  token: String
+    token: {
+    type: String,
+    default: null,
+  }
 }, { versionKey: false, timestamps: true });
 
 userSchema.post("save", handleMongooseError);
@@ -42,13 +40,17 @@ const registerSchema = Joi.object({
 const loginSchema = Joi.object({
     password: Joi.string().min(6).required(),
     email: Joi.string().pattern(emailRegexp).required(),
-  
     //token: Joi.string().required(),
+});
+
+const subscriptionSchema = Joi.object({
+  subscription: Joi.string().validate(...purposeList),
 });
 
 const schemas = {
     registerSchema,
     loginSchema,
+    subscriptionSchema,
 }
 const User = model("user", userSchema);
 
