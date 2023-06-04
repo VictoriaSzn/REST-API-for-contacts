@@ -3,6 +3,7 @@ const logger = require('morgan')
 const cors = require('cors')
 require("dotenv").config();
 
+const authRouter = require('./routes/api/auth')
 const contactsRouter = require('./routes/api/contacts')
 
 const app = express()
@@ -12,7 +13,9 @@ const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'
 app.use(logger(formatsLogger))
 app.use(cors())
 app.use(express.json())//якщо Postman, Headers, Content-Type - application/json то ця миделвара строку перетворює на обьект
+app.use(express.static("public"))//якщо прийде запит за файли то візьме його з папки static
 
+app.use('/api/auth', authRouter)
 app.use('/api/contacts', contactsRouter)
 
 app.use((req, res) => {

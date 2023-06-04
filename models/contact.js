@@ -17,7 +17,12 @@ const contactSchema = new Schema({
     favorite: {
         type: Boolean,
         default: false,
-    }
+    },
+    owner: {
+    type: Schema.Types.ObjectId,
+    ref: "user",
+    required: true,
+  },
 }, { versionKey: false, timestamps: true });//об'єкт налаштування
 //щоб замість _v(версія) писало дату створення і дату оновлення
 
@@ -27,7 +32,7 @@ const Contact = model("contact", contactSchema);
 contactSchema.post("save", handleMongooseError);
 
 const addSchema = Joi.object({
-  name: Joi.string(),
+  name: Joi.string().required(),
   email: Joi.string(),
   phone: Joi.string(),
   favorite: Joi.boolean(),
