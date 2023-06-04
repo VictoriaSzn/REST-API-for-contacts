@@ -1,6 +1,7 @@
 const express = require('express');
 const ctrl = require("../../controllers/contacts");
 const {schemas} = require("../../models/contact");
+
 const {validateBody, isValidId, authenticate} = require("../../middlewares")
 
 const router = express.Router();
@@ -18,5 +19,6 @@ router.put('/:contactId', authenticate, isValidId, validateBody(schemas.addSchem
 
 router.patch('/:contactId/favorite', authenticate, isValidId, validateBody(schemas.updateFavoriteSchema),ctrl.updateFavorite);
 //редагує поле назву якого ви точно знаєте
+
 
 module.exports = router;
